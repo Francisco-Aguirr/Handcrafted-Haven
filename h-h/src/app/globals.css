@@ -1,0 +1,95 @@
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #b8e3e2, #e5d6f6);
+  color: #111;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 4rem;
+  background: white;
+}
+
+.navbar .logo {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+  gap: 0.5rem;
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #000;
+  font-weight: 600;
+}
+
+.nav-icons {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-icons .icon {
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+/* Hero */
+.hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4rem 6rem;
+}
+
+.hero-text h2 {
+  font-size: 2.5rem;
+  margin: 0;
+  font-weight: 400;
+}
+
+.hero-text h1 {
+  font-size: 4rem;
+  font-weight: 700;
+  margin: 0.5rem 0 2rem;
+}
+
+.buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.btn-primary,
+.btn-secondary {
+  border: none;
+  padding: 0.8rem 2rem;
+  border-radius: 2rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: white;
+  color: black;
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.5);
+  color: black;
+}
+
+.hero-image img {
+  width: 400px;
+  height: auto;
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
+}
