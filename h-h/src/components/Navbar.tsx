@@ -1,4 +1,6 @@
 "use client";
+
+import Link from "next/link";
 import { FaSearch, FaShoppingCart, FaUser, FaFingerprint } from "react-icons/fa";
 
 export default function Navbar() {
@@ -8,12 +10,17 @@ export default function Navbar() {
         <FaFingerprint className="icon" />
         <span>H/H</span>
       </div>
-{/* It is necesary change from <a> to <Link> to improve navigation */}
 
       <ul className="nav-links">
-        <li><a href="../products">Products</a></li>
-        <li><a href="../about">About</a></li>
-        <li><a href="../artisans">Artisans</a></li>
+        <li>
+          <Link href="/products">Products</Link>
+        </li>
+        <li>
+          <Link href="/about">About</Link>
+        </li>
+        <li>
+          <Link href="/artisans">Artisans</Link>
+        </li>
       </ul>
 
       <div className="nav-icons">

@@ -1,3 +1,7 @@
+"use client";
+import Image from "next/image";
+
+
 export default function Hero() {
   return (
     <section className="hero">
@@ -11,7 +15,13 @@ export default function Hero() {
       </div>
 
       <div className="hero-image">
-        <img src="/hero-image.png" alt="handmade jug" />
+        <Image
+          src="/hero-image.png"
+          alt="handmade jug"
+          width={500}
+          height={500}
+          priority
+        />
       </div>
     </section>
   );
