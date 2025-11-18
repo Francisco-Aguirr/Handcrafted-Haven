@@ -34,6 +34,10 @@ body {
   font-weight: 600;
 }
 
+.h-icon {
+  width: 2.1rem;
+  height: 2.1rem;
+}
 .nav-icons {
   display: flex;
   gap: 1.5rem;
@@ -164,4 +168,236 @@ body {
   .hero-image img {
     width: 550px;
   }
+}
+
+/* Product Section */
+.product-section {
+  padding: 4rem 6rem;
+  text-align: center;
+}
+
+.product-section-title {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  font-weight: 700;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 2rem;
+}
+
+.product-card {
+  background: white;
+  padding: 1.8rem;
+  border-radius: 1.2rem;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+  transition: transform .2s ease, box-shadow .2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+}
+
+.product-card h3 {
+  margin: 1rem 0 0.5rem;
+}
+
+.product-image {
+  border-radius: 0.8rem;
+  object-fit: cover;
+}
+
+.description {
+  color: #555;
+  font-size: 0.9rem;
+  margin: 0.4rem 0;
+}
+/* Rating stars */
+.rating {
+  display: flex;
+  gap: 0.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.star {
+  color: #ccc;
+  font-size: 1.1rem;
+}
+
+.star.filled {
+  color: #f7b500;
+}
+
+/* Footer inside the card */
+.product-footer {
+  margin-top: auto;
+  padding-top: 0.8rem;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.artisan {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.artisan-avatar {
+  border-radius: 50%;
+}
+
+.artisan-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* Action buttons */
+.footer-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.icon-btn {
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  width: 32px;
+  height: 32px;
+  border-radius: 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  background: #eaeaea;
+}
+
+/* Add to cart button */
+.btn-cart {
+  margin-top: 1rem;
+  padding: 0.8rem 1.2rem;
+  border: none;
+  background: #111;
+  color: white;
+  border-radius: 0.6rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background .2s ease;
+}
+
+.btn-cart:hover {
+  background: #333;
+}
+
+.price {
+  font-weight: bold;
+  color: #444;
+  margin-bottom: 1rem;
+}
+
+.btn-add {
+  padding: 0.6rem 1.5rem;
+  border: none;
+  border-radius: 1rem;
+  background: #222;
+  color: white;
+  cursor: pointer;
+  transition: background .2s ease;
+}
+
+.btn-add:hover {
+  background: #444;
+}
+
+
+/* RESPONSIVE — Mobile & Tablet (≤ 768px) */
+@media (max-width: 768px) {
+  .product-card {
+    padding: 1.5rem;
+  }
+
+  .product-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.8rem;
+  }
+
+  .footer-actions {
+    width: 100%;
+    justify-content: center;
+    gap: 0.8rem;
+  }
+
+  .icon-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .artisan {
+    width: 100%;
+  }
+
+  .artisan-name {
+    font-size: 1rem;
+  }
+}
+
+
+
+/* Footer */
+.footer {
+  margin-top: 4rem;
+  padding: 2.5rem 1rem;
+  background: white;
+  text-align: center;
+  border-top: 1px solid #ddd;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 1rem;
+}
+
+.footer-links a {
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
+
+.footer-social {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.footer-social .icon {
+  cursor: pointer;
+  font-size: 1.3rem;
+  color: #333;
+  transition: color .2s ease;
+}
+
+.footer-social .icon:hover {
+  color: #555;
+}
+
+.footer-copy {
+  font-size: 0.9rem;
+  color: #555;
 }

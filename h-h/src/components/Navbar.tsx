@@ -7,7 +7,7 @@ export default function Navbar() {
   return (
     <nav className="navbar">
       <div className="logo">
-        <FaFingerprint className="icon" />
+        <Link href="/"><FaFingerprint className="h-icon" /></Link>
         <span>H/H</span>
       </div>
 

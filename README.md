@@ -5,3 +5,4 @@ Handcrafted Haven is an innovative web application that aims to provide a platfo
 
 Ramon Douglas Nunes de Andrade  
 Francisco Javier Aguirre Ramirez
+Opong Ebenezer Jules Samu Tro
