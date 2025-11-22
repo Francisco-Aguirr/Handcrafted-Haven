@@ -66,6 +66,10 @@ export default function RegisterPage() {
                     <button type="submit" className="register-btn">
                         Register
                     </button>
+                    <p className="login-link">
+                        Already have an account?
+                        <a href="/login"> Login here</a>
+                    </p>
                 </form>
 
             </div>

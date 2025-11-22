@@ -68,3 +68,18 @@
 .register-btn:hover {
     background: #059669;
 }
+.login-link {
+    margin-top: 14px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.login-link a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
