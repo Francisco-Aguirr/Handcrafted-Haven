@@ -1,0 +1,85 @@
+.register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #e3f7ff, #eedeff);
+    padding: 20px;
+}
+
+.register-box {
+    background: white;
+    padding: 28px 32px;
+    width: 360px;                 /* reduced width */
+    border-radius: 14px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.register-title {
+    text-align: center;
+    font-size: 26px;             /* smaller title */
+    margin-bottom: 18px;         /* reduce spacing */
+    font-weight: 600;
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.register-form label {
+    font-weight: 500;
+    margin-bottom: 4px;
+    font-size: 14px;
+}
+
+.register-form input {
+    padding: 10px;               /* smaller inputs */
+    margin-bottom: 14px;         /* less spacing */
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.role-section {
+    margin-bottom: 16px;         /* less spacing */
+    font-size: 14px;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.register-btn {
+    width: 100%;
+    padding: 10px;               /* smaller button height */
+    background: #10b981;
+    color: white;
+    font-size: 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.register-btn:hover {
+    background: #059669;
+}
+.login-link {
+    margin-top: 14px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.login-link a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
