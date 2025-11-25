@@ -73,7 +73,7 @@ body {
   .hero {
     flex-direction: column;
     text-align: center;
-    padding: 2rem;
+    padding: 4rem;
   }
 
   .hero-text h2 {
@@ -93,7 +93,7 @@ body {
 @media (min-width: 768px) and (max-width: 1024px) {
  
   .hero {
-    padding: 3rem 3rem;
+    padding: 4rem 3rem;
     gap: 2rem;
   }
 
@@ -122,7 +122,7 @@ body {
 
 /* Product Section */
 .product-section {
-  padding: 4rem 6rem;
+  padding: 4rem 4rem;
   text-align: center;
 }
 
@@ -272,7 +272,7 @@ body {
 /* RESPONSIVE — Mobile & Tablet (≤ 768px) */
 @media (max-width: 768px) {
   .product-card {
-    padding: 1.5rem;
+    padding: 1rem;
   }
 
   .product-footer {
@@ -360,7 +360,7 @@ body {
 
 .search-header {
   background: white;
-  padding: 2rem 0;
+  padding: 7rem 0;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   margin-bottom: 2rem;
 }
@@ -486,7 +486,7 @@ body {
 }
 
 .price-inputs {
-  display: flex;
+  margin: 1.1rem;
   align-items: center;
   gap: 0.5rem;
 }
@@ -647,7 +647,8 @@ body {
   }
   
   .search-container {
-    padding: 0 1rem;
+    margin-top: 1.5rem;
+    padding: 2.5rem 1rem;
   }
   
   .products-grid {
