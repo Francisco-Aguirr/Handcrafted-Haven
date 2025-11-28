@@ -3,13 +3,35 @@
 import Image from "next/image";
 import { Product } from "@/types/Product";
 import { FaHeart, FaPlus, FaShareAlt, FaStar } from "react-icons/fa";
+import { useState } from "react";
 
 export default function ProductCard({ product }: { product: Product }) {
   const stars = Array.from({ length: 5 }, (_, i) => i < product.rating);
 
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  async function toggleFavorite() {
+    try {
+      if (!isFavorite) {
+        await fetch("/api/favorites", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ productId: product.id }),
+        });
+        setIsFavorite(true);
+      } else {
+        await fetch(`/api/favorites?productId=${product.id}`, {
+          method: "DELETE",
+        });
+        setIsFavorite(false);
+      }
+    } catch (err) {
+      console.error("Error toggling favorite", err);
+    }
+  }
+
   return (
     <div className="product-card">
-      {/* Imagen principal del producto */}
       <Image
         src={product.image}
         alt={product.name}
@@ -18,26 +40,17 @@ export default function ProductCard({ product }: { product: Product }) {
         className="product-image"
       />
 
-      {/* Nombre y precio */}
       <h3>{product.name}</h3>
       <p className="price">${product.price.toFixed(2)}</p>
-
-      {/* Descripción */}
       <p className="description">{product.description}</p>
 
-      {/* Estrellas */}
       <div className="rating">
         {stars.map((filled, index) => (
-          <FaStar
-            key={index}
-            className={filled ? "star filled" : "star"}
-          />
+          <FaStar key={index} className={filled ? "star filled" : "star"} />
         ))}
       </div>
 
-      {/* Footer de la Card */}
       <div className="product-footer">
-        {/* Artesano */}
         <div className="artisan">
           <Image
             src={product.artisan.avatar}
@@ -49,22 +62,24 @@ export default function ProductCard({ product }: { product: Product }) {
           <span className="artisan-name">{product.artisan.name}</span>
         </div>
 
-        {/* Icons: share, fav, add */}
         <div className="footer-actions">
           <button className="icon-btn">
             <FaShareAlt />
           </button>
-          <button className="icon-btn">
-            <FaHeart />
+
+          {/* FAVORITO */}
+          <button className="icon-btn" onClick={toggleFavorite}>
+            <FaHeart className={isFavorite ? "text-red-500" : ""} />
           </button>
+
           <button className="icon-btn">
             <FaPlus />
           </button>
         </div>
       </div>
 
-      {/* Botón de agregar al carrito */}
       <button className="btn-cart">Add to Cart</button>
     </div>
   );
 }
+

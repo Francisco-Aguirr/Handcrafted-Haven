@@ -16,7 +16,7 @@ async function seedUsers() {
       password: 'password123',
       phone: '600111222',
       role: 'user',
-      avatar_url: '/placeholder-avatar.jpg'
+      avatar_url: '/avatar-1.png'
     },
     {
       first_name: 'Lucía',
@@ -25,7 +25,7 @@ async function seedUsers() {
       password: 'password123',
       phone: '611222333',
       role: 'artisan',
-      avatar_url: '/placeholder-avatar.jpg'
+      avatar_url: '/avatar-2.png'
     },
     {
       first_name: 'Miguel',
