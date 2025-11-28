@@ -37,7 +37,8 @@ export default function ProductCard({ product }: { product: Product }) {
         alt={product.name}
         width={300}
         height={250}
-        className="product-image"
+        className="product-image cursor-pointer"
+        onClick={() => window.location.href = `/products/details/${product.id}`}
       />
 
       <h3>{product.name}</h3>
