@@ -3,87 +3,75 @@
 import { useState, useEffect } from 'react';
 import { FaSearch, FaFilter, FaSlidersH } from 'react-icons/fa';
 import ProductCard from '@/components/ProductCard';
-import React from 'react';
-
-const mockProducts = [
-  {
-    id: '1',
-    name: 'Handwoven Ceramic Bowl',
-    price: 45.99,
-    image: '/placeholder-product.jpg',
-    description: 'Beautiful handcrafted ceramic bowl perfect for serving.',
-    rating: 5,
-    artisan: {
-      name: 'Maria Santos',
-      avatar: '/placeholder-avatar.jpg'
-    }
-  },
-  {
-    id: '2',
-    name: 'Wooden Cutting Board',
-    price: 32.50,
-    image: '/placeholder-product.jpg',
-    description: 'Sustainable bamboo cutting board with ergonomic design.',
-    rating: 4,
-    artisan: {
-      name: 'John Carpenter',
-      avatar: '/placeholder-avatar.jpg'
-    }
-  },
-  {
-    id: '3',
-    name: 'Knitted Wool Scarf',
-    price: 28.75,
-    image: '/placeholder-product.jpg',
-    description: 'Soft merino wool scarf hand-knitted with love.',
-    rating: 5,
-    artisan: {
-      name: 'Elena Rodriguez',
-      avatar: '/placeholder-avatar.jpg'
-    }
-  },
-  {
-    id: '4',
-    name: 'Glass Vase Set',
-    price: 67.00,
-    image: '/placeholder-product.jpg',
-    description: 'Set of 3 hand-blown glass vases in different sizes.',
-    rating: 4,
-    artisan: {
-      name: 'David Glass',
-      avatar: '/placeholder-avatar.jpg'
-    }
-  }
-];
+import { getCategories } from '@/app/actions/categories';
+import { getArtesians } from '@/app/actions/artesians';
+import { getProducts } from '@/app/actions/products';
 
 export default function SearchPage() {
+
   const [searchTerm, setSearchTerm] = useState('');
-  const [filteredProducts, setFilteredProducts] = useState(mockProducts);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [artesians, setArtesians] = useState([]);
+  const [products, setProducts] = useState([]);
+
   const [filters, setFilters] = useState({
+    artesian: '',
     category: '',
     minPrice: 0,
     maxPrice: 100,
     rating: 0,
     sortBy: 'name'
   });
+
   const [showFilters, setShowFilters] = useState(true);
 
+  // Fetch categories and artesians on mount
   useEffect(() => {
-    let filtered = mockProducts.filter(product =>
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.artisan.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    async function fetchData() {
+      const cats = await getCategories();
+      const arts = await getArtesians();
+      setCategories(cats);
+      setArtesians(arts);
+    }
+    fetchData();
+  }, []);
 
-    // Apply filters
-    filtered = filtered.filter(product => {
-      return product.price >= filters.minPrice &&
-             product.price <= filters.maxPrice &&
-             product.rating >= filters.rating;
-    });
 
-    // Apply sorting
-    filtered.sort((a, b) => {
+  // Fetch products when filters change
+  useEffect(() => {
+    async function fetchProducts() {
+      console.log('Fetching with filters:', {
+        category: filters.category,
+        artesian: filters.artesian,
+        minPrice: filters.minPrice,
+        maxPrice: filters.maxPrice,
+        rating: filters.rating,
+        searchTerm: searchTerm
+      });
+      
+      const prods = await getProducts({
+        category: filters.category,
+        artesian: filters.artesian,
+        minPrice: filters.minPrice,
+        maxPrice: filters.maxPrice,
+        rating: filters.rating,
+        searchTerm: searchTerm
+      });
+      
+      console.log('Products received:', prods.length);
+      setProducts(prods);
+    }
+    fetchProducts();
+  }, [filters, searchTerm]);
+
+
+  useEffect(() => {
+   // if (!products.length) return;
+
+    // Apply client-side sorting
+    let sorted = [...products];
+    sorted.sort((a, b) => {
       switch (filters.sortBy) {
         case 'price-low':
           return a.price - b.price;
@@ -97,8 +85,8 @@ export default function SearchPage() {
       }
     });
 
-    setFilteredProducts(filtered);
-  }, [searchTerm, filters]);
+    setFilteredProducts(sorted);
+  }, [products, filters.sortBy]);
 
   const handleFilterChange = (filterType, value) => {
     setFilters(prev => ({
@@ -107,7 +95,9 @@ export default function SearchPage() {
     }));
   };
 
+  
   return (
+
     <div className="search-page">
       {/* Search Header */}
       <div className="search-header">
@@ -122,7 +112,7 @@ export default function SearchPage() {
               className="search-input"
             />
           </div>
-          <button 
+          <button
             className="filter-toggle"
             onClick={() => setShowFilters(!showFilters)}
           >
@@ -135,59 +125,54 @@ export default function SearchPage() {
       <div className="search-content">
         {/* Sidebar Filters */}
         <div className={`search-sidebar ${showFilters ? 'visible' : 'hidden'}`}>
+
           <div className="filter-section">
             <h3>Categories</h3>
             <div className="filter-group">
               <label>
-                <input 
-                  type="radio" 
-                  name="category" 
+                <input
+                  type="radio"
+                  name="category"
                   value=""
                   checked={filters.category === ''}
-                  onChange={(e) => handleFilterChange('category', e.target.value)}
-                />
+                  onChange={(e) => handleFilterChange('category', e.target.value)} />
                 All Categories
               </label>
+              {categories.map(category => (
+                <label key={category.id}>
+                  <input
+                    type="radio"
+                    name="category"
+                    value={category.id}
+                    checked={filters.category === category.id}
+                    onChange={(e) => handleFilterChange('category', e.target.value)} />
+                  {category.name}
+                </label>
+              ))}
+            </div>
+          </div><div className="filter-section">
+            <h3>Artesians</h3>
+            <div className="filter-group">
               <label>
-                <input 
-                  type="radio" 
-                  name="category" 
-                  value="pottery"
-                  checked={filters.category === 'pottery'}
-                  onChange={(e) => handleFilterChange('category', e.target.value)}
-                />
-                Pottery & Ceramics
+                <input
+                  type="radio"
+                  name="artisan"
+                  value=""
+                  checked={filters.artesian === ''}
+                  onChange={(e) => handleFilterChange('artesian', e.target.value)} />
+                All Artesian
               </label>
-              <label>
-                <input 
-                  type="radio" 
-                  name="category" 
-                  value="textiles"
-                  checked={filters.category === 'textiles'}
-                  onChange={(e) => handleFilterChange('category', e.target.value)}
-                />
-                Textiles & Fabrics
-              </label>
-              <label>
-                <input 
-                  type="radio" 
-                  name="category" 
-                  value="woodwork"
-                  checked={filters.category === 'woodwork'}
-                  onChange={(e) => handleFilterChange('category', e.target.value)}
-                />
-                Woodwork
-              </label>
-              <label>
-                <input 
-                  type="radio" 
-                  name="category" 
-                  value="jewelry"
-                  checked={filters.category === 'jewelry'}
-                  onChange={(e) => handleFilterChange('category', e.target.value)}
-                />
-                Jewelry
-              </label>
+              {artesians.map(artesian => (
+                <label key={artesian.id}>
+                  <input
+                    type="radio"
+                    name="artisan"
+                    value={artesian.id}
+                    checked={filters.artesian === artesian.id}
+                    onChange={(e) => handleFilterChange('artesian', e.target.value)} />
+                  {artesian.name}
+                </label>
+              ))}
             </div>
           </div>
 
@@ -199,16 +184,14 @@ export default function SearchPage() {
                 placeholder="Min"
                 value={filters.minPrice}
                 onChange={(e) => handleFilterChange('minPrice', Number(e.target.value))}
-                className="price-input"
-              />
+                className="price-input" />
               <span>-</span>
               <input
                 type="number"
                 placeholder="Max"
                 value={filters.maxPrice}
                 onChange={(e) => handleFilterChange('maxPrice', Number(e.target.value))}
-                className="price-input"
-              />
+                className="price-input" />
             </div>
           </div>
 
@@ -217,13 +200,12 @@ export default function SearchPage() {
             <div className="rating-filter">
               {[1, 2, 3, 4, 5].map(rating => (
                 <label key={rating}>
-                  <input 
-                    type="radio" 
+                  <input
+                    type="radio"
                     name="rating"
                     value={rating}
                     checked={filters.rating === rating}
-                    onChange={(e) => handleFilterChange('rating', Number(e.target.value))}
-                  />
+                    onChange={(e) => handleFilterChange('rating', Number(e.target.value))} />
                   {rating}+ Stars
                 </label>
               ))}
@@ -232,7 +214,7 @@ export default function SearchPage() {
 
           <div className="filter-section">
             <h3>Sort By</h3>
-            <select 
+            <select
               value={filters.sortBy}
               onChange={(e) => handleFilterChange('sortBy', e.target.value)}
               className="sort-select"
@@ -242,12 +224,11 @@ export default function SearchPage() {
               <option value="price-high">Price (High to Low)</option>
               <option value="rating">Highest Rated</option>
             </select>
-          </div>
-
-          <button 
+          </div><button
             className="clear-filters"
             onClick={() => setFilters({
               category: '',
+              artesian: '',
               minPrice: 0,
               maxPrice: 100,
               rating: 0,
@@ -256,6 +237,9 @@ export default function SearchPage() {
           >
             Clear All Filters
           </button>
+
+
+
         </div>
 
         {/* Main Content */}
