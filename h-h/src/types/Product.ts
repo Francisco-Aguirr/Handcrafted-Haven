@@ -6,6 +6,7 @@ export interface Product {
   description: string;
   rating: number;        // 1–5
   artisan: {
+    id: string;
     name: string;
     avatar: string;      // URL
   };
