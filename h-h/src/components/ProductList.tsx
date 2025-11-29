@@ -13,6 +13,7 @@ export default function ProductList() {
       description: "A unique vase crafted by local artisans.",
       rating: 4,
       artisan: {
+        id: "mock-artisan-1",
         name: "Eli Bark",
         avatar: "/avatar-2.jpg",
       },
@@ -25,6 +26,7 @@ export default function ProductList() {
       description: "Made with natural fibers and traditional techniques.",
       rating: 5,
       artisan: {
+        id: "mock-artisan-2",
         name: "Marco Hernández",
         avatar: "/avatar-1.png",
       },
@@ -37,6 +39,7 @@ export default function ProductList() {
       description: "A stunning wooden piece carved by hand.",
       rating: 4,
       artisan: {
+        id: "mock-artisan-3",
         name: "Sara Gómez",
         avatar: "/avatar-3.jpg",
       },
