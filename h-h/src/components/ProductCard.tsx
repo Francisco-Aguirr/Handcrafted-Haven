@@ -1,48 +1,55 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 import { Product } from "@/types/Product";
 import { FaHeart, FaPlus, FaShareAlt, FaStar } from "react-icons/fa";
-import { useState } from "react";
 
-export default function ProductCard({ product }: { product: Product }) {
-  const stars = Array.from({ length: 5 }, (_, i) => i < product.rating);
+export default function ProductCard({
+  product,
+  favoriteIds = [],
+}: {
+  product: Product;
+  favoriteIds?: string[];
+}) {
+  const [isFavorite, setIsFavorite] = useState(
+    favoriteIds.includes(product.id)
+  );
 
-  const [isFavorite, setIsFavorite] = useState(false);
-
-  async function toggleFavorite() {
+  const toggleFavorite = async () => {
     try {
-      if (!isFavorite) {
-        await fetch("/api/favorites", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ productId: product.id }),
-        });
-        setIsFavorite(true);
-      } else {
-        await fetch(`/api/favorites?productId=${product.id}`, {
-          method: "DELETE",
-        });
-        setIsFavorite(false);
-      }
+      const res = await fetch("/api/favorites", {
+        method: isFavorite ? "DELETE" : "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ productId: product.id }),
+      });
+
+      if (!res.ok) throw new Error("Failed favorite update");
+
+      setIsFavorite(!isFavorite);
     } catch (err) {
-      console.error("Error toggling favorite", err);
+      console.error(err);
     }
-  }
+  };
+
+  const stars = Array.from({ length: 5 }, (_, i) => i < product.rating);
 
   return (
     <div className="product-card">
+
       <Image
         src={product.image}
         alt={product.name}
         width={300}
         height={250}
-        className="product-image cursor-pointer"
-        onClick={() => window.location.href = `/products/details/${product.id}`}
+        className="product-image"
       />
 
       <h3>{product.name}</h3>
       <p className="price">${product.price.toFixed(2)}</p>
+
       <p className="description">{product.description}</p>
 
       <div className="rating">
@@ -68,9 +75,8 @@ export default function ProductCard({ product }: { product: Product }) {
             <FaShareAlt />
           </button>
 
-          {/* FAVORITO */}
           <button className="icon-btn" onClick={toggleFavorite}>
-            <FaHeart className={isFavorite ? "text-red-500" : ""} />
+            <FaHeart className={isFavorite ? "text-red-500" : "text-gray-400"} />
           </button>
 
           <button className="icon-btn">
@@ -83,4 +89,3 @@ export default function ProductCard({ product }: { product: Product }) {
     </div>
   );
 }
-

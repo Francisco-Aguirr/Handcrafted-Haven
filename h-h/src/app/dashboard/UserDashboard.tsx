@@ -66,12 +66,53 @@ export default function UserDashboard({ user }: Props) {
   <p>You don't have any favorites yet.</p>
 ) : (
   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-    {favorites.map((fav) => (
-      <Card key={fav.id}>
-        <h3 className="text-lg font-semibold">{fav.name}</h3>
-        <p className="text-gray-700">${Number(fav.price)}</p>
-      </Card>
-    ))}
+{favorites.map((fav) => {
+  // Determinar productId robustamente (depende de la forma en que tu API te devuelve favoritos)
+  const productId = (fav as any).product_id ?? (fav as any).id;
+
+  return (
+    <Card key={productId}>
+  <div className="flex gap-4 items-center">
+
+    {/* Imagen del producto */}
+    <img
+      src={fav.image}
+      alt={fav.name}
+      className="w-20 h-20 object-cover rounded-md border"
+    />
+
+    <div className="flex-1">
+      <h3 className="text-lg font-semibold">{fav.name}</h3>
+      <p className="text-gray-700">${Number(fav.price)}</p>
+    </div>
+
+    {/* Botón para eliminar */}
+    <button
+      onClick={async () => {
+        try {
+          const res = await fetch(`/api/favorites?productId=${productId}`, {
+            method: "DELETE",
+          });
+
+          if (res.ok) {
+            setFavorites((prev) =>
+              prev.filter((x) => (x.product_id ?? x.id) !== productId)
+            );
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      }}
+      className="text-red-500 font-bold text-xl hover:text-red-700"
+    >
+      ✕
+    </button>
+  </div>
+</Card>
+  );
+})}
+
+
   </div>
 )}
 
