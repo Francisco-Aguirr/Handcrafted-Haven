@@ -1,14 +1,13 @@
-import NextAuth from "next-auth";
+import NextAuth, { type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import postgres from "postgres";
 import bcrypt from "bcryptjs";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
-export const authOptions = {
-  session: {
-    strategy: "jwt",
-  },
+export const authOptions: NextAuthOptions = {
+  session: { strategy: "jwt" },
+
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -18,33 +17,54 @@ export const authOptions = {
       },
 
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) return null;
+  console.log("🟦 authorize() called with:", credentials);
 
-        const rows = await sql`
-          SELECT id, email, password_hash, first_name, last_name, role
-          FROM users
-          WHERE email = ${credentials.email.toLowerCase()}
-          LIMIT 1
-        `;
+  if (!credentials?.email || !credentials?.password) {
+    console.log("❌ Missing credentials");
+    return null;
+  }
 
-        if (rows.length === 0) return null;
+  const rows = await sql`
+    SELECT id, email, password_hash, first_name, last_name, role
+    FROM users
+    WHERE email = ${credentials.email.toLowerCase()}
+    LIMIT 1
+  `;
 
-        const user = rows[0];
+  console.log("🟦 Query result:", rows);
 
-        const isValid = await bcrypt.compare(
-          credentials.password,
-          user.password_hash
-        );
+  if (rows.length === 0) {
+    console.log("❌ User not found");
+    return null;
+  }
 
-        if (!isValid) return null;
+  const user = rows[0];
 
-        return {
-          id: user.id,
-          email: user.email,
-          name: `${user.first_name} ${user.last_name}`,
-          role: user.role,
-        };
-      },
+  const isValidPassword = await bcrypt.compare(
+    credentials.password,
+    user.password_hash
+  );
+
+  console.log("🟦 Password match:", isValidPassword);
+
+  if (!isValidPassword) {
+    console.log("❌ Invalid password");
+    return null;
+  }
+
+  console.log("✅ Login successful:", {
+    id: user.id,
+    role: user.role,
+  });
+
+  return {
+    id: user.id,
+    email: user.email,
+    name: `${user.first_name} ${user.last_name}`,
+    role: user.role,
+  };
+}
+
     }),
   ],
 
@@ -53,7 +73,6 @@ export const authOptions = {
   },
 
   callbacks: {
-    // Add user ID and role into JWT
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
@@ -72,6 +91,5 @@ export const authOptions = {
   },
 };
 
-const handler = NextAuth(authOptions as any);
-
+const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
