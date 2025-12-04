@@ -7,7 +7,7 @@ export async function listProducts(filters: SearchFilters = {}) {
 
   const { 
     category = null, 
-    artesian = null, 
+    artisan = null, 
     minPrice = 0, 
     maxPrice = 999999, 
     rating = 0,
@@ -21,8 +21,8 @@ export async function listProducts(filters: SearchFilters = {}) {
     conditions.push(`category_id = '${category}'`);
   }
   
-  if (artesian || artesian !== '') {
-    conditions.push(`artisan_id = '${artesian}'`);
+  if (artisan || artisan !== '') {
+    conditions.push(`artisan_id = '${artisan}'`);
   }
   
   conditions.push(`price >= '${minPrice}'`);

@@ -1,4 +1,4 @@
-export interface Artesian {
+export interface artisan {
   id: string;
   name: string;
   surename: string;

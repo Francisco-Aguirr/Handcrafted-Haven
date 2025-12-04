@@ -4,9 +4,39 @@
 import Image from "next/image";
 import { Product } from "@/types/Product";
 import { FaHeart, FaPlus, FaShareAlt, FaStar } from "react-icons/fa";
+import { useState } from "react";
 
 export default function ProductDetails(product: Product) {
   const stars = Array.from({ length: 5 }, (_, i) => i < product.rating);
+  const favoriteIds = [];
+
+   const [isFavorite, setIsFavorite] = useState(
+    favoriteIds.includes(product.id)
+  );
+
+
+  console.log("Product Details Component:", product);
+  const toggleFavorite = async () => {
+    try {
+      const res = await fetch("/api/favorites", {
+        method: isFavorite ? "DELETE" : "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ productId: product.id }),
+      });
+
+      if (!res.ok) throw new Error("Failed favorite update");
+
+      setIsFavorite(!isFavorite);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const goToPageartisan = (id: string) => {
+    window.location.href = `/artisans/details/${id}`;
+  }
 
   return (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -22,7 +52,7 @@ export default function ProductDetails(product: Product) {
           <h1 className="text-3xl font-bold">{product.name}</h1>
           
           <p className="text-2xl font-semibold text-green-600">
-          ${product.price.toFixed(2)}
+          ${product.price}
           </p>
 
           <div className="rating">
@@ -36,7 +66,7 @@ export default function ProductDetails(product: Product) {
 
           {/* Artesano */}
           <div className="border-t border-b py-4">
-            <div className="artisan">
+            <div className="artisan cursor-pointer" onClick={() => goToPageartisan(product.artisan.id)}>
               <Image
                 src={product.artisan.avatar}
                 alt={product.artisan.name}
@@ -53,8 +83,8 @@ export default function ProductDetails(product: Product) {
             <button className="icon-btn">
               <FaShareAlt />
             </button>
-            <button className="icon-btn">
-              <FaHeart />
+            <button className="icon-btn"  onClick={toggleFavorite}>
+              <FaHeart className={isFavorite ? "text-red-500" : "text-gray-400"} />
             </button>
             <button className="icon-btn">
               <FaPlus />
