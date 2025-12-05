@@ -1,4 +1,4 @@
-import { getArtisans } from "../actions/artisans";
+import { getArtisans } from "@/app/actions/artisans";
 import ArtisanCard from "@/components/ArtisanCard";
 
 export default async function ArtisansPage() {
