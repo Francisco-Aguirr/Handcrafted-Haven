@@ -1,6 +1,6 @@
 export interface SearchFilters {
   category?: string | null;
-  artesian?: string | null;
+  artisan?: string | null;
   minPrice?: number;
   maxPrice?: number;
   rating?: number;

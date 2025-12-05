@@ -12,6 +12,7 @@ export default function ProductCard({
   product: Product;
   favoriteIds?: string[];
 }) {
+  
   const [isFavorite, setIsFavorite] = useState(
     favoriteIds.includes(product.id)
   );
@@ -34,6 +35,14 @@ export default function ProductCard({
     }
   };
 
+  const goToPage = (id: string) => {
+    window.location.href = `/products/details/${id}`;
+  }
+
+  const goToPageartisan = (id: string) => {
+    window.location.href = `/artisans/details/${id}`;
+  }
+
   const stars = Array.from({ length: 5 }, (_, i) => i < product.rating);
 
   return (
@@ -44,13 +53,14 @@ export default function ProductCard({
         alt={product.name}
         width={300}
         height={250}
-        className="product-image"
+        className="product-image cursor-pointer"
+        onClick={() => goToPage(product.id)}
       />
 
-      <h3>{product.name}</h3>
-      <p className="price">${product.price.toFixed(2)}</p>
+      <h3  onClick={() => goToPage(product.id)} className="cursor-pointer">{product.name}</h3>
+      <p className="price cursor-pointer" onClick={() => goToPage(product.id)}>${product.price.toFixed(2)}</p>
 
-      <p className="description">{product.description}</p>
+      <p className="description cursor-pointer" onClick={() => goToPage(product.id)}>{product.description}</p>
 
       <div className="rating">
         {stars.map((filled, index) => (
@@ -59,7 +69,7 @@ export default function ProductCard({
       </div>
 
       <div className="product-footer">
-        <div className="artisan">
+        <div className="artisan cursor-pointer" onClick={() => goToPageartisan(product.artisan.id)}>
           <Image
             src={product.artisan.avatar}
             alt={product.artisan.name}
@@ -75,7 +85,7 @@ export default function ProductCard({
             <FaShareAlt />
           </button>
 
-          <button className="icon-btn" onClick={toggleFavorite}>
+          <button className="icon-btn cursor-pointer" onClick={toggleFavorite}>
             <FaHeart className={isFavorite ? "text-red-500" : "text-gray-400"} />
           </button>
 

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { FaSearch, FaFilter, FaSlidersH } from 'react-icons/fa';
 import ProductCard from '@/components/ProductCard';
 import { getCategories } from '@/app/actions/categories';
-import { getArtesians } from '@/app/actions/artesians';
+import { getArtisans } from '@/app/actions/artisans';
 import { getProducts } from '@/app/actions/products';
 
 export default function SearchPage() {
@@ -12,11 +12,11 @@ export default function SearchPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [artesians, setArtesians] = useState([]);
+  const [artisans, setartisans] = useState([]);
   const [products, setProducts] = useState([]);
 
   const [filters, setFilters] = useState({
-    artesian: '',
+    artisan: '',
     category: '',
     minPrice: 0,
     maxPrice: 100,
@@ -26,13 +26,13 @@ export default function SearchPage() {
 
   const [showFilters, setShowFilters] = useState(true);
 
-  // Fetch categories and artesians on mount
+  // Fetch categories and artisans on mount
   useEffect(() => {
     async function fetchData() {
       const cats = await getCategories();
-      const arts = await getArtesians();
+      const arts = await getArtisans();
       setCategories(cats);
-      setArtesians(arts);
+      setartisans(arts);
     }
     fetchData();
   }, []);
@@ -43,7 +43,7 @@ export default function SearchPage() {
     async function fetchProducts() {
       console.log('Fetching with filters:', {
         category: filters.category,
-        artesian: filters.artesian,
+        artisan: filters.artisan,
         minPrice: filters.minPrice,
         maxPrice: filters.maxPrice,
         rating: filters.rating,
@@ -52,7 +52,7 @@ export default function SearchPage() {
       
       const prods = await getProducts({
         category: filters.category,
-        artesian: filters.artesian,
+        artisan: filters.artisan,
         minPrice: filters.minPrice,
         maxPrice: filters.maxPrice,
         rating: filters.rating,
@@ -151,26 +151,26 @@ export default function SearchPage() {
               ))}
             </div>
           </div><div className="filter-section">
-            <h3>Artesians</h3>
+            <h3>artisans</h3>
             <div className="filter-group">
               <label>
                 <input
                   type="radio"
                   name="artisan"
                   value=""
-                  checked={filters.artesian === ''}
-                  onChange={(e) => handleFilterChange('artesian', e.target.value)} />
-                All Artesian
+                  checked={filters.artisan === ''}
+                  onChange={(e) => handleFilterChange('artisan', e.target.value)} />
+                All artisan
               </label>
-              {artesians.map(artesian => (
-                <label key={artesian.id}>
+              {artisans.map(artisan => (
+                <label key={artisan.id}>
                   <input
                     type="radio"
                     name="artisan"
-                    value={artesian.id}
-                    checked={filters.artesian === artesian.id}
-                    onChange={(e) => handleFilterChange('artesian', e.target.value)} />
-                  {artesian.name}
+                    value={artisan.id}
+                    checked={filters.artisan === artisan.id}
+                    onChange={(e) => handleFilterChange('artisan', e.target.value)} />
+                  {artisan.name}
                 </label>
               ))}
             </div>
@@ -228,7 +228,7 @@ export default function SearchPage() {
             className="clear-filters"
             onClick={() => setFilters({
               category: '',
-              artesian: '',
+              artisan: '',
               minPrice: 0,
               maxPrice: 100,
               rating: 0,
