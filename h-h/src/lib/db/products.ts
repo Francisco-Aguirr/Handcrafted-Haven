@@ -20,7 +20,7 @@ function mapProduct(row: any) {
       avatar: row.artisan_avatar ?? "/avatar-3.jpg",
     },
   };
-  
+
 }
 
 /**
@@ -89,4 +89,31 @@ export async function getProductById(id: string) {
     return null;
   }
   return mapProduct(rows[0]);
- }
+}
+
+/**
+ * Gets a product by ID with owner user_id for authorization
+ */
+export async function getProductWithOwnerInfo(id: string) {
+  const rows = await sql`
+   SELECT 
+      p.*,
+      u.id AS owner_user_id,
+      u.first_name || ' ' || u.last_name AS artisan_name,
+      u.avatar_url AS artisan_avatar
+      FROM products p
+      JOIN artisans a ON a.id = p.artisan_id
+      JOIN users u ON u.id = a.user_id
+      WHERE p.id = ${id};
+  `;
+
+  if (rows.length === 0) {
+    return null;
+  }
+
+  return {
+    ...mapProduct(rows[0]),
+    ownerUserId: rows[0].owner_user_id,
+  };
+}
+

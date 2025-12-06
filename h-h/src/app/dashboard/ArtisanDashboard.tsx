@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import EditProductModal from "@/components/EditProductModal";
 
 type Product = {
   id: string;
@@ -28,6 +29,7 @@ export default function ArtisanDashboard({ user }: { user: any }) {
 
   // Form state for create/edit
   const [editing, setEditing] = useState<Product | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [form, setForm] = useState({
     name: "",
     description: "",
@@ -78,6 +80,11 @@ export default function ArtisanDashboard({ user }: { user: any }) {
 
   function openEdit(prod: Product) {
     setEditing(prod);
+    setIsEditModalOpen(true);
+  }
+
+  function openEditForm(prod: Product) {
+    setEditing(prod);
     setForm({
       name: prod.name,
       description: prod.description ?? "",
@@ -119,74 +126,74 @@ export default function ArtisanDashboard({ user }: { user: any }) {
     }
   }
 
-  
-async function submitProduct(e?: React.FormEvent) {
-  if (e) e.preventDefault();
-  if (!form.name || !form.price) {
-    alert("Name and price required");
-    return;
-  }
 
-  try {
-    const formData = new FormData();
-    formData.append("name", form.name);
-    formData.append("description", form.description);
-    formData.append("price", form.price);
-    
-    if (productImage) {
-      formData.append("image", productImage);
-      console.log('Product image details:', {
-        name: productImage.name,
-        size: productImage.size,
-        type: productImage.type
-      });
-    } else if (editing?.image_url && !productImage && !imagePreview.startsWith('data:')) {
-      formData.append("existingImageUrl", editing.image_url);
+  async function submitProduct(e?: React.FormEvent) {
+    if (e) e.preventDefault();
+    if (!form.name || !form.price) {
+      alert("Name and price required");
+      return;
     }
 
-    const url = editing ? `/api/artisans/products/${editing.id}` : "/api/artisans/products";
-    const method = editing ? "PUT" : "POST";
+    try {
+      const formData = new FormData();
+      formData.append("name", form.name);
+      formData.append("description", form.description);
+      formData.append("price", form.price);
 
-    console.log('Sending request to:', url, 'method:', method);
-    console.log('Form data entries:');
-    for (const [key, value] of formData.entries()) {
-      console.log(key, ':', value instanceof File ? `${value.name} (${value.size} bytes)` : value);
-    }
-
-    const response = await fetch(url, {
-      method: method,
-      body: formData,
-    });
-
-    console.log('Response status:', response.status, response.statusText);
-    
-    if (!response.ok) {
-      // Intentar leer el mensaje de error del response
-      let errorMessage = `${response.status}: ${response.statusText}`;
-      try {
-        const errorData = await response.json();
-        errorMessage = errorData.error || errorMessage;
-        console.error('Error response data:', errorData);
-      } catch (e) {
-        console.error('Could not parse error response');
+      if (productImage) {
+        formData.append("image", productImage);
+        console.log('Product image details:', {
+          name: productImage.name,
+          size: productImage.size,
+          type: productImage.type
+        });
+      } else if (editing?.image_url && !productImage && !imagePreview.startsWith('data:')) {
+        formData.append("existingImageUrl", editing.image_url);
       }
-      throw new Error(errorMessage);
+
+      const url = editing ? `/api/artisans/products/${editing.id}` : "/api/artisans/products";
+      const method = editing ? "PUT" : "POST";
+
+      console.log('Sending request to:', url, 'method:', method);
+      console.log('Form data entries:');
+      for (const [key, value] of formData.entries()) {
+        console.log(key, ':', value instanceof File ? `${value.name} (${value.size} bytes)` : value);
+      }
+
+      const response = await fetch(url, {
+        method: method,
+        body: formData,
+      });
+
+      console.log('Response status:', response.status, response.statusText);
+
+      if (!response.ok) {
+        // Intentar leer el mensaje de error del response
+        let errorMessage = `${response.status}: ${response.statusText}`;
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorMessage;
+          console.error('Error response data:', errorData);
+        } catch (e) {
+          console.error('Could not parse error response');
+        }
+        throw new Error(errorMessage);
+      }
+
+      const result = await response.json();
+      console.log('Success response:', result);
+
+      await loadAll();
+      setEditing(null);
+      setForm({ name: "", description: "", price: "" });
+      setProductImage(null);
+      setImagePreview("");
+
+    } catch (err: any) {
+      console.error("Save error details:", err);
+      alert(`Error saving product: ${err.message || 'Unknown error'}`);
     }
-
-    const result = await response.json();
-    console.log('Success response:', result);
-
-    await loadAll();
-    setEditing(null);
-    setForm({ name: "", description: "", price: "" });
-    setProductImage(null);
-    setImagePreview("");
-    
-  } catch (err: any) {
-    console.error("Save error details:", err);
-    alert(`Error saving product: ${err.message || 'Unknown error'}`);
   }
-}
 
   async function deleteProduct(id: string) {
     if (!confirm("Are you sure you want to delete this product?")) return;
@@ -204,7 +211,7 @@ async function submitProduct(e?: React.FormEvent) {
     try {
       const formData = new FormData();
       formData.append("bio", bio);
-      
+
       if (profileImage) {
         formData.append("avatar", profileImage);
       } else if (profile?.avatar_url && !profileImage && !avatarPreview.startsWith('data:')) {
@@ -225,7 +232,7 @@ async function submitProduct(e?: React.FormEvent) {
       alert("Profile updated");
       setProfileImage(null);
       setAvatarPreview("");
-      
+
     } catch (err) {
       console.error("Profile error", err);
       alert("Error updating profile");
@@ -341,35 +348,35 @@ async function submitProduct(e?: React.FormEvent) {
         <form onSubmit={submitProduct} className="space-y-3">
           <div>
             <label className="block text-sm font-medium">Name *</label>
-            <input 
-              name="name" 
-              value={form.name} 
-              onChange={handleChange} 
-              className="w-full border rounded p-2" 
-              required 
+            <input
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              className="w-full border rounded p-2"
+              required
             />
           </div>
           <div>
             <label className="block text-sm font-medium">Description</label>
-            <textarea 
-              name="description" 
-              value={form.description} 
-              onChange={handleChange} 
-              className="w-full border rounded p-2" 
-              rows={3} 
+            <textarea
+              name="description"
+              value={form.description}
+              onChange={handleChange}
+              className="w-full border rounded p-2"
+              rows={3}
             />
           </div>
           <div>
             <label className="block text-sm font-medium">Price *</label>
-            <input 
-              name="price" 
-              value={form.price} 
-              onChange={handleChange} 
+            <input
+              name="price"
+              value={form.price}
+              onChange={handleChange}
               type="number"
               step="0.01"
               min="0"
-              className="w-full border rounded p-2" 
-              required 
+              className="w-full border rounded p-2"
+              required
             />
           </div>
           <div>
@@ -390,8 +397,8 @@ async function submitProduct(e?: React.FormEvent) {
               />
             </div>
             <p className="text-xs text-gray-500">
-              {editing 
-                ? "Upload a new image or keep the current one" 
+              {editing
+                ? "Upload a new image or keep the current one"
                 : "Upload an image for your product"}
             </p>
           </div>
@@ -401,14 +408,14 @@ async function submitProduct(e?: React.FormEvent) {
               {editing ? "Save changes" : "Create product"}
             </button>
             {editing && (
-              <button 
-                type="button" 
-                onClick={() => { 
-                  setEditing(null); 
-                  setForm({ name: "", description: "", price: "" }); 
+              <button
+                type="button"
+                onClick={() => {
+                  setEditing(null);
+                  setForm({ name: "", description: "", price: "" });
                   setProductImage(null);
                   setImagePreview("");
-                }} 
+                }}
                 className="px-4 py-2 border rounded"
               >
                 Cancel
@@ -417,6 +424,25 @@ async function submitProduct(e?: React.FormEvent) {
           </div>
         </form>
       </section>
+
+      {/* Edit Product Modal */}
+      {editing && (
+        <EditProductModal
+          product={{
+            id: editing.id,
+            name: editing.name,
+            description: editing.description,
+            price: editing.price,
+            image: editing.image_url || "",
+          }}
+          isOpen={isEditModalOpen}
+          onClose={() => {
+            setIsEditModalOpen(false);
+            setEditing(null);
+            loadAll(); // Refresh the list
+          }}
+        />
+      )}
     </div>
   );
 }

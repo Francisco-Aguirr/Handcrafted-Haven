@@ -3,7 +3,8 @@
 import Image from "next/image";
 import { useState } from "react";
 import { Product } from "@/types/Product";
-import { FaHeart, FaPlus, FaShareAlt, FaStar } from "react-icons/fa";
+import { FaHeart, FaPlus, FaShareAlt } from "react-icons/fa";
+import StarRating from "./StarRating";
 
 export default function ProductCard({
   product,
@@ -12,7 +13,7 @@ export default function ProductCard({
   product: Product;
   favoriteIds?: string[];
 }) {
-  
+
   const [isFavorite, setIsFavorite] = useState(
     favoriteIds.includes(product.id)
   );
@@ -43,8 +44,6 @@ export default function ProductCard({
     window.location.href = `/artisans/details/${id}`;
   }
 
-  const stars = Array.from({ length: 5 }, (_, i) => i < product.rating);
-
   return (
     <div className="product-card">
 
@@ -57,15 +56,19 @@ export default function ProductCard({
         onClick={() => goToPage(product.id)}
       />
 
-      <h3  onClick={() => goToPage(product.id)} className="cursor-pointer">{product.name}</h3>
+      <h3 onClick={() => goToPage(product.id)} className="cursor-pointer">{product.name}</h3>
       <p className="price cursor-pointer" onClick={() => goToPage(product.id)}>${product.price.toFixed(2)}</p>
 
       <p className="description cursor-pointer" onClick={() => goToPage(product.id)}>{product.description}</p>
 
-      <div className="rating">
-        {stars.map((filled, index) => (
-          <FaStar key={index} className={filled ? "star filled" : "star"} />
-        ))}
+      {/* Star Rating - display only on cards, click to go to product page */}
+      <div onClick={() => goToPage(product.id)} className="cursor-pointer">
+        <StarRating
+          productId={product.id}
+          initialRating={product.rating}
+          size="sm"
+          interactive={false}
+        />
       </div>
 
       <div className="product-footer">
@@ -99,3 +102,4 @@ export default function ProductCard({
     </div>
   );
 }
+
