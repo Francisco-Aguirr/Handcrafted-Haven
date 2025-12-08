@@ -52,6 +52,7 @@ export async function POST(req: Request) {
     const priceStr = formData.get('price') as string;
     const price = parseFloat(priceStr);
     const imageFile = formData.get('image') as File;
+    const category_id = formData.get('category_id') as string;
 
     console.log('POST - Parsed values:', { name, description, price, hasImage: !!imageFile });
 
@@ -102,10 +103,10 @@ export async function POST(req: Request) {
 
     // Insertar producto en la base de datos
     const insert = await db.query(
-      `INSERT INTO products (artisan_id, name, description, price, image_url) 
-       VALUES ($1, $2, $3, $4, $5) 
+      `INSERT INTO products (artisan_id, name, description, price, image_url, category_id) 
+       VALUES ($1, $2, $3, $4, $5, $6) 
        RETURNING *`,
-      [artisanId, name, description || null, price, imageUrl || null]
+      [artisanId, name, description || null, price, imageUrl || null, category_id || null]
     );
 
     console.log('POST - Product inserted:', insert.rows[0]);

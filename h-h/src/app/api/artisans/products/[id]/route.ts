@@ -22,7 +22,7 @@ export async function PUT(
 
   try {
     const formData = await req.formData();
-
+    const category_id = formData.get('category_id') as string;
     console.log("PUT - FormData entries:");
     for (const [key, value] of formData.entries()) {
       console.log(
@@ -98,9 +98,9 @@ export async function PUT(
     // Actualizar producto
     await db.query(
       `UPDATE products 
-       SET name = $1, description = $2, price = $3, image_url = $4 
+       SET name = $1, description = $2, price = $3, image_url = $4, category_id = $6
        WHERE id = $5`,
-      [name, description || null, price, imageUrl || null, id]
+      [name, description || null, price, imageUrl || null, id, category_id || null]
     );
 
     const updated = await db.query(

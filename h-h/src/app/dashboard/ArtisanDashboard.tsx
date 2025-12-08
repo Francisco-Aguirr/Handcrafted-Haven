@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
-import EditProductModal from "@/components/EditProductModal";
 
 type Product = {
   id: string;
@@ -11,6 +10,7 @@ type Product = {
   price: number;
   image_url?: string | null;
   created_at?: string;
+  category_id?: string | null;
 };
 
 type Profile = {
@@ -20,20 +20,27 @@ type Profile = {
   avatar_url?: string | null;
 };
 
+type Category = {
+  id: string;
+  name: string;
+};
+
 export default function ArtisanDashboard({ user }: { user: any }) {
   const router = useRouter();
 
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   // Form state for create/edit
   const [editing, setEditing] = useState<Product | null>(null);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  // modal removed — edit form is inline
   const [form, setForm] = useState({
     name: "",
     description: "",
     price: "",
+    category_id: "",
   });
 
   // Estado para las imágenes
@@ -53,15 +60,18 @@ export default function ArtisanDashboard({ user }: { user: any }) {
   async function loadAll() {
     setLoading(true);
     try {
-      const [pRes, profRes] = await Promise.all([
+      const [pRes, profRes, catRes] = await Promise.all([
         fetch("/api/artisans/products"),
         fetch("/api/artisans/profile"),
+        fetch("/api/categories"),
       ]);
       const pJson = await pRes.json();
       const profJson = await profRes.json();
+      const catJson = await catRes.json();
 
       setProducts(Array.isArray(pJson) ? pJson : []);
       setProfile(profJson || null);
+      setCategories(Array.isArray(catJson) ? catJson : []);
       setBio(profJson?.bio ?? "");
       setAvatarUrl(profJson?.avatar_url ?? "");
     } catch (err) {
@@ -73,14 +83,14 @@ export default function ArtisanDashboard({ user }: { user: any }) {
 
   function openCreate() {
     setEditing(null);
-    setForm({ name: "", description: "", price: "" });
+    setForm({ name: "", description: "", price: "", category_id: "" });
     setProductImage(null);
     setImagePreview("");
   }
 
   function openEdit(prod: Product) {
-    setEditing(prod);
-    setIsEditModalOpen(true);
+    // open inline edit form (no modal component available)
+    openEditForm(prod);
   }
 
   function openEditForm(prod: Product) {
@@ -89,12 +99,13 @@ export default function ArtisanDashboard({ user }: { user: any }) {
       name: prod.name,
       description: prod.description ?? "",
       price: String(prod.price ?? ""),
+      category_id: prod.category_id ?? "",
     });
     setImagePreview(prod.image_url ?? "");
     setProductImage(null);
   }
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+  function handleChange(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
@@ -139,6 +150,7 @@ export default function ArtisanDashboard({ user }: { user: any }) {
       formData.append("name", form.name);
       formData.append("description", form.description);
       formData.append("price", form.price);
+      formData.append("category_id", form.category_id);
 
       if (productImage) {
         formData.append("image", productImage);
@@ -185,7 +197,7 @@ export default function ArtisanDashboard({ user }: { user: any }) {
 
       await loadAll();
       setEditing(null);
-      setForm({ name: "", description: "", price: "" });
+      setForm({ name: "", description: "", price: "", category_id: "" });
       setProductImage(null);
       setImagePreview("");
 
@@ -324,6 +336,11 @@ export default function ArtisanDashboard({ user }: { user: any }) {
                 <h3 className="font-semibold">{p.name}</h3>
                 <p className="text-sm text-gray-600 mb-2">{p.description}</p>
                 <p className="font-medium mb-3">${Number(p.price).toFixed(2)}</p>
+                {p.category_id && (
+                  <p className="text-xs text-gray-500 mb-1">
+                    Category: {categories.find(c => c.id === p.category_id)?.name || 'Unknown'}
+                  </p>
+                )}
 
                 <div className="flex gap-2">
                   <button onClick={() => openEdit(p)} className="px-3 py-1 border rounded">
@@ -379,6 +396,26 @@ export default function ArtisanDashboard({ user }: { user: any }) {
               required
             />
           </div>
+          {/* SELECTOR DE CATEGORÍA - NUEVO */}
+          <div>
+            <label className="block text-sm font-medium">Category</label>
+            <select
+              name="category_id"
+              value={form.category_id}
+              onChange={handleChange}
+              className="w-full border rounded p-2 bg-white"
+            >
+              <option value="">Select a category</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+            <p className="text-xs text-gray-500 mt-1">
+              Optional: Choose a category for your product
+            </p>
+          </div>
           <div>
             <label className="block text-sm font-medium">Product Image</label>
             <div className="flex items-center gap-4 mb-3">
@@ -412,7 +449,7 @@ export default function ArtisanDashboard({ user }: { user: any }) {
                 type="button"
                 onClick={() => {
                   setEditing(null);
-                  setForm({ name: "", description: "", price: "" });
+                  setForm({ name: "", description: "", price: "", category_id: "" });
                   setProductImage(null);
                   setImagePreview("");
                 }}
@@ -425,24 +462,7 @@ export default function ArtisanDashboard({ user }: { user: any }) {
         </form>
       </section>
 
-      {/* Edit Product Modal */}
-      {editing && (
-        <EditProductModal
-          product={{
-            id: editing.id,
-            name: editing.name,
-            description: editing.description,
-            price: editing.price,
-            image: editing.image_url || "",
-          }}
-          isOpen={isEditModalOpen}
-          onClose={() => {
-            setIsEditModalOpen(false);
-            setEditing(null);
-            loadAll(); // Refresh the list
-          }}
-        />
-      )}
+      {/* Inline edit handled by the form above (modal removed) */}
     </div>
   );
 }

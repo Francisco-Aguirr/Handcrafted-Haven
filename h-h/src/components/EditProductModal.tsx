@@ -11,6 +11,7 @@ type EditProductModalProps = {
         description: string;
         price: number;
         image: string;
+        category_id?: string;
     };
     isOpen: boolean;
     onClose: () => void;
