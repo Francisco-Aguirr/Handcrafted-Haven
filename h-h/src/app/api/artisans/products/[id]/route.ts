@@ -117,3 +117,80 @@ export async function PUT(
     );
   }
 }
+
+export async function DELETE(
+  req: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
+  console.log("DELETE /api/artisans/products/[id] called");
+
+  const { id } = await context.params;
+  console.log("DELETE - Product ID:", id);
+
+  const session = await auth();
+  console.log("DELETE - Session user:", session?.user?.id);
+
+  if (!session?.user) {
+    console.log("DELETE - Unauthorized: no session");
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    // Verificar que es artesano
+    const artisanQuery = await db.query(
+      "SELECT id FROM artisans WHERE user_id = $1 LIMIT 1",
+      [session.user.id]
+    );
+
+    console.log("DELETE - Artisan query:", artisanQuery.rows);
+
+    if (artisanQuery.rows.length === 0) {
+      return NextResponse.json(
+        { error: "User is not an artisan" },
+        { status: 400 }
+      );
+    }
+
+    const artisanId = artisanQuery.rows[0].id;
+
+    // Verificar propiedad del producto antes de eliminar
+    const check = await db.query(
+      `SELECT p.id, p.name 
+       FROM products p 
+       WHERE p.id = $1 AND p.artisan_id = $2`,
+      [id, artisanId]
+    );
+
+    console.log("DELETE - Ownership check:", check.rows);
+
+    if (check.rows.length === 0) {
+      return NextResponse.json(
+        {
+          error: "Product not found or you don't have permission to delete it",
+        },
+        { status: 403 }
+      );
+    }
+
+    const productName = check.rows[0].name;
+    console.log(`DELETE - Deleting product: ${productName} (ID: ${id})`);
+
+    // Eliminar el producto
+    await db.query("DELETE FROM products WHERE id = $1", [id]);
+
+    console.log(`DELETE - Product ${id} deleted successfully`);
+
+    return NextResponse.json({ 
+      success: true, 
+      message: "Product deleted successfully",
+      deletedProductId: id 
+    });
+
+  } catch (error: any) {
+    console.error("Error in DELETE product:", error);
+    return NextResponse.json(
+      { error: "Internal server error", details: error.message },
+      { status: 500 }
+    );
+  }
+}
