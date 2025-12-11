@@ -141,7 +141,7 @@ export default function ArtisanDashboard({ user }: { user: any }) {
   async function submitProduct(e?: React.FormEvent) {
     if (e) e.preventDefault();
     if (!form.name || !form.price) {
-      alert("Name and price required");
+      alert("Name and Price Required");
       return;
     }
 
