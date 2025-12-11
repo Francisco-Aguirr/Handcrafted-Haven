@@ -79,7 +79,7 @@ function AdminDashboardContent() {
 
   async function approve(id: string) {
     try {
-      await fetch("/api/admin/artisans/approve", {
+      await fetch("/api/admin/artisans/aprove", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
