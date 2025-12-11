@@ -163,9 +163,6 @@ export default function ProductDetails(props: ProductDetailsProps) {
             <button className="icon-btn" onClick={toggleFavorite}>
               <FaHeart className={isFavorite ? "text-red-500" : "text-gray-400"} />
             </button>
-            <button className="icon-btn">
-              <FaPlus />
-            </button>
 
              {showShareOptions && (
               <>
