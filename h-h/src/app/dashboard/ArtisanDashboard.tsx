@@ -349,7 +349,7 @@ export default function ArtisanDashboard({ user }: { user: any }) {
                   <button onClick={() => deleteProduct(p.id)} className="px-3 py-1 bg-red-600 text-white rounded">
                     Delete
                   </button>
-                  <button onClick={() => router.push(`/products/${p.id}`)} className="px-3 py-1 border rounded ml-auto">
+                  <button onClick={() => router.push(`/products/details/${p.id}`)} className="px-3 py-1 border rounded ml-auto">
                     View
                   </button>
                 </div>
