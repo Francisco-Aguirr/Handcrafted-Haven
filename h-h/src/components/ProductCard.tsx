@@ -99,6 +99,11 @@ export default function ProductCard({
     }
   };
 
+  const contactArtisan = () => {
+    const formattedBody = `Hello ${product.artisan.name}, I am interested in your product "${product.name}" in Handcrafted Haven. Please provide more details. Thank you!`;
+    window.open(`mailto:${product.artisan.email}?body=${encodeURIComponent(formattedBody)}`);
+  }
+
   return (
     <div className="product-card">
       <Image
@@ -207,13 +212,11 @@ export default function ProductCard({
             <FaHeart className={isFavorite ? "text-red-500" : "text-gray-400"} />
           </button>
 
-          <button className="icon-btn">
-            <FaPlus />
-          </button>
         </div>
       </div>
 
-      <button className="btn-cart">Add to Cart</button>
+      <button className="btn-cart" onClick={contactArtisan}>Contact with Artisan</button>
+
     </div>
   );
 }

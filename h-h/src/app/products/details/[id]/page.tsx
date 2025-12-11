@@ -3,6 +3,24 @@ import ProductDetail from '@/components/ProductDetails';
 import { getProduct } from '@/app/actions/products';
 import { auth } from '@/auth';
 import { getProductWithOwnerInfo } from '@/lib/db/products';
+import { Metadata } from 'next';
+
+// Generate dynamic metadata for SEO
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const product = await getProductWithOwnerInfo(id);
+  
+  if (!product) {
+    return {
+      title: 'Product Not Found',
+    };
+  }
+
+  return {
+    title: `${product.name} by ${product.artisan.name}`,
+    description: product.description || `Handcrafted ${product.name} by ${product.artisan.name}`,
+  };
+}
 
 export default async function ProductDetails({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

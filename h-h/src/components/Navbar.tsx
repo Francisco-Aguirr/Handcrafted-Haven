@@ -239,7 +239,6 @@ export default function Navbar() {
         {/* Desktop Icons */}
         <div className="hidden md:flex gap-6 text-xl items-center">
           <Link href="/search" className="hover:text-gray-600"><FaSearch /></Link>
-          <Link href="/cart" className="hover:text-gray-600"><FaShoppingCart /></Link>
           <UserDropdown />
         </div>
 
@@ -280,7 +279,6 @@ export default function Navbar() {
 
         <div className="flex gap-6 text-xl mt-10">
           <Link href="/search" className="hover:text-gray-600" onClick={() => setMenuOpen(false)}><FaSearch /></Link>
-          <Link href="/cart" className="hover:text-gray-600" onClick={() => setMenuOpen(false)}><FaShoppingCart /></Link>
         </div>
 
         {/* Mobile User Menu */}

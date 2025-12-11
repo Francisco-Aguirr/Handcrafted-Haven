@@ -1,9 +1,6 @@
-// import ProductList from "@/components/ProductList";
 import Hero from "../components/Hero";
 import ProductCard from "@/components/ProductCard";
 import { getRandomProducts } from "@/lib/db/products";
-
-
 
 
 export default async function HomePage() {
@@ -21,7 +18,6 @@ export default async function HomePage() {
         ))}
       </div>
     </div>
-      {/* <ProductList /> */}
     </>
   );
 }
