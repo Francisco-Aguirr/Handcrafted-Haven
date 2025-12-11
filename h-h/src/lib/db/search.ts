@@ -56,7 +56,7 @@ export async function listProducts(filters: SearchFilters = {}) {
       name: product.artisan_name,
       avatar: product.artisan_avatar || '/avatar-3.jpg',
     },
-    image: product.image || '/globe.svg'
+    image: product.image_url || '/globe.svg'
   }));
 
 }

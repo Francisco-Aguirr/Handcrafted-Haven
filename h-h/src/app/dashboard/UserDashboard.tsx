@@ -5,6 +5,7 @@ import DashboardContainer from "./components/DashboardContainer";
 import SectionTitle from "./components/SectionTitle";
 import Card from "./components/Card";
 import { useRouter } from "next/navigation";
+import { Product } from "@/types/Product";
 
 type Props = {
   user: {
@@ -40,19 +41,25 @@ export default function UserDashboard({ user }: Props) {
     loadFavorites();
   }, []);
 
-  async function handleRemoveFavorite(productId: string) {
-    try {
-      await fetch("/api/favorites", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId }),
-      });
+  // En tu UserDashboard.tsx
+async function handleRemoveFavorite(productId: string) {
+  try {
+    // Enviar productId como query parameter
+    const response = await fetch(`/api/favorites?productId=${productId}`, {
+      method: "DELETE",
+    });
 
-      setFavorites((prev) => prev.filter((f) => f.id !== productId));
-    } catch (err) {
-      console.error("Error removing favorite", err);
+    if (!response.ok) {
+      throw new Error("Failed to remove favorite");
     }
+
+    setFavorites((prev) => prev.filter((f) => f.id !== productId));
+    
+  } catch (err) {
+    console.error("Error removing favorite", err);
+    alert("Failed to remove favorite. Please try again.");
   }
+}
 
   // ----------------------------------------------------
   // ARTISAN REQUEST
@@ -129,7 +136,7 @@ export default function UserDashboard({ user }: Props) {
                 </button>
 
                 <button
-                  onClick={() => router.push("/")}
+                  onClick={() => router.push(`/products/details/${fav.id}`)}
                   className="text-blue-600 hover:text-blue-800 transition"
                 >
                   View Product

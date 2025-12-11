@@ -13,6 +13,7 @@ import {
   FaSignOutAlt,
   FaCog,
 } from "react-icons/fa";
+import { lusitana } from '@/app/ui/fonts';
 
 // Logout Confirmation Modal Component
 function LogoutModal({ isOpen, onConfirm, onCancel }: {
@@ -225,7 +226,7 @@ export default function Navbar() {
           <Link href="/" className="text-black">
             <FaFingerprint className="w-8 h-8" />
           </Link>
-          <span>H/H</span>
+          <span className={`${lusitana.className}`}>H/H</span>
         </div>
 
         {/* Desktop Navigation */}
