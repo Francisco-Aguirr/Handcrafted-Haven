@@ -2,6 +2,7 @@ import { put } from '@vercel/blob';
 import { uploadToCloudinary } from './cloudinary';
 
 export async function uploadImageToBlob(file: File, folder: string = 'products') {
+
   try {
     console.log('Uploading image...');
     
@@ -37,10 +38,26 @@ export async function uploadImageToBlob(file: File, folder: string = 'products')
 }
 
 async function convertToBase64(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result as string);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
+  // Check if we're in browser environment
+  if (typeof window !== 'undefined' && typeof FileReader !== 'undefined') {
+    // Browser environment - use FileReader
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  } else {
+    // Server environment - use Buffer
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      const base64 = buffer.toString('base64');
+      const mimeType = file.type || 'image/jpeg';
+      return `data:${mimeType};base64,${base64}`;
+    } catch (error) {
+      console.error('Error converting to base64 on server:', error);
+      throw new Error('Failed to convert file to base64');
+    }
+  }
 }
