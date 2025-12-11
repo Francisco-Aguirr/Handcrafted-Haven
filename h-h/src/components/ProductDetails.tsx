@@ -108,6 +108,11 @@ export default function ProductDetails(props: ProductDetailsProps) {
     }
   };
 
+  const contactArtisan = () => {
+    const formattedBody = `Hello ${product.artisan.name}, I am interested in your product "${product.name}" in Handcrafted Haven. Please provide more details. Thank you!`;
+    window.open(`mailto:${product.artisan.email}?body=${encodeURIComponent(formattedBody)}`);
+  }
+
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -227,6 +232,10 @@ export default function ProductDetails(props: ProductDetailsProps) {
                 Edit Product
               </button>
             )}
+          </div>
+          
+          <div>
+          <button className="btn-cart" onClick={contactArtisan}>Contact with Artisan</button>
           </div>
 
           <div>

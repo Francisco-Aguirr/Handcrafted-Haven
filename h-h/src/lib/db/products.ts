@@ -17,6 +17,7 @@ function mapProduct(row: any) {
     artisan: {
       id: row.artisan_id,
       name: row.artisan_name ?? "Unknown",
+      email: row.artisan_email ?? "",
       avatar: row.artisan_avatar ?? "/avatar-3.jpg",
     },
   };
@@ -32,6 +33,7 @@ export async function getRandomProducts(limit: number) {
       p.*,
       u.id AS artisan_user_id,
       u.first_name || ' ' || u.last_name AS artisan_name,
+      u.email AS artisan_email,
       u.avatar_url AS artisan_avatar
     FROM products p
     JOIN artisans a ON a.id = p.artisan_id
@@ -53,6 +55,7 @@ export async function getAllProducts() {
       u.id AS artisan_user_id,
       c.name AS category_name,
       u.first_name || ' ' || u.last_name AS artisan_name,
+      u.email AS artisan_email,
       u.avatar_url AS artisan_avatar
     FROM products p
     LEFT JOIN categories c ON c.id = p.category_id
@@ -77,6 +80,7 @@ export async function getProductById(id: string) {
       p.*,
       u.id AS artisan_user_id,
       u.first_name || ' ' || u.last_name AS artisan_name,
+      u.email AS artisan_email,
       u.avatar_url AS artisan_avatar
       FROM products p
       JOIN artisans a ON a.id = p.artisan_id
@@ -100,6 +104,7 @@ export async function getProductWithOwnerInfo(id: string) {
       p.*,
       u.id AS owner_user_id,
       u.first_name || ' ' || u.last_name AS artisan_name,
+      u.email AS artisan_email,
       u.avatar_url AS artisan_avatar
       FROM products p
       JOIN artisans a ON a.id = p.artisan_id
